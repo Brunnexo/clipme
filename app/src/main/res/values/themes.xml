@@ -1,0 +1,126 @@
+<resources>
+    <!-- Neo-brutalist: cream paper, black ink, flat yellow, hard offset shadows. Light only (see ClipmeApp). -->
+    <style name="Theme.Clipme" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/ink</item>
+        <item name="colorOnPrimary">@color/yellow</item>
+        <item name="colorPrimaryContainer">@color/yellow</item>
+        <item name="colorOnPrimaryContainer">@color/ink</item>
+        <item name="colorSecondaryContainer">@color/yellow</item>
+        <item name="colorOnSecondaryContainer">@color/ink</item>
+        <item name="colorSurface">@color/cream</item>
+        <item name="colorOnSurface">@color/ink</item>
+        <item name="colorOnSurfaceVariant">@color/muted</item>
+        <item name="colorOutline">@color/ink</item>
+        <item name="colorError">@color/coral</item>
+        <item name="android:colorBackground">@color/cream</item>
+        <item name="android:windowBackground">@color/cream</item>
+        <item name="android:textColorPrimary">@color/ink</item>
+    </style>
+
+    <style name="Theme.Clipme.Share">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="Theme.Clipme.Capture" parent="@android:style/Theme.Translucent.NoTitleBar">
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="Theme.Clipme.Player" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <style name="Widget.Clipme.Label" parent="">
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:letterSpacing">0.1</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="Widget.Clipme.Logo" parent="">
+        <item name="android:layout_width">52dp</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:layout_marginHorizontal">6dp</item>
+        <item name="android:background">@drawable/bg_nb_circle</item>
+        <item name="android:padding">15dp</item>
+        <item name="tint">@color/ink</item>
+    </style>
+
+    <style name="Widget.Clipme.Button" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@drawable/bg_nb_button</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+    </style>
+
+    <style name="Widget.Clipme.StepNumber" parent="">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:background">@drawable/bg_nb_step</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+    </style>
+
+    <style name="Widget.Clipme.StepText" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:paddingHorizontal">4dp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Widget.Clipme.Toggle" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingHorizontal">2dp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="backgroundTint">@color/toggle_bg</item>
+        <item name="strokeColor">@color/ink</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMinTextSize">9sp</item>
+        <item name="autoSizeMaxTextSize">13sp</item>
+        <item name="autoSizeStepGranularity">0.5sp</item>
+    </style>
+
+    <style name="Widget.Clipme.Radio" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:buttonTint">@color/ink</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:paddingStart">8dp</item>
+    </style>
+
+    <style name="Widget.Clipme.RadioHint" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">40dp</item>
+        <item name="android:textColor">@color/muted</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+</resources>

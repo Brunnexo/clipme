@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300" role="img" aria-label="Clipme">
+  <rect width="900" height="300" fill="#FFF4E6"/>
+  <rect x="40" y="40" width="840" height="230" rx="30" fill="#111111"/>
+  <rect x="24" y="24" width="840" height="230" rx="30" fill="#FFE500" stroke="#111111" stroke-width="6"/>
+  <g transform="translate(8,20) scale(2.5)">
+    <path fill="#111111" d="M24,34 h52 a8,8 0 0 1 8,8 v28 a8,8 0 0 1 -8,8 h-52 a8,8 0 0 1 -8,-8 v-28 a8,8 0 0 1 8,-8 z"/>
+    <path fill="#FFFBF0" stroke="#111111" stroke-width="3" stroke-linejoin="round" d="M30,28 h52 a8,8 0 0 1 8,8 v28 a8,8 0 0 1 -8,8 h-52 a8,8 0 0 1 -8,-8 v-28 a8,8 0 0 1 8,-8 z"/>
+    <path fill="#111111" stroke="#111111" stroke-width="4" stroke-linejoin="round" d="M46,40 L46,58 L63,49 z"/>
+    <path fill="#FFE500" stroke="#111111" stroke-width="3.5" stroke-linejoin="round" d="M68,56 h12 v10 h6 L74,82 L62,66 h6 z"/>
+  </g>
+  <text x="318" y="150" font-family="'Arial Black','Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="104" fill="#111111">Clipme</text>
+  <rect x="320" y="172" width="418" height="50" rx="12" fill="#FFFBF0" stroke="#111111" stroke-width="4"/>
+  <text x="338" y="207" font-family="'Arial Black','Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="26" fill="#111111">Baixe v&#237;deos. Sem login.</text>
+  <circle cx="800" cy="88" r="26" fill="#FF5A5F" stroke="#111111" stroke-width="5"/>
+  <path d="M770,226 L808,160 L846,226 z" fill="#7AD7E8" stroke="#111111" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M722,104 h26 M735,91 v26" stroke="#111111" stroke-width="5" stroke-linecap="round"/>
+</svg>
