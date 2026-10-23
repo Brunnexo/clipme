@@ -5,3 +5,6 @@ local.properties
 .idea/
 .kotlin/
 CLAUDE.md
+keystore.properties
+*.jks
+*.keystore

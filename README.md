@@ -86,7 +86,7 @@ O Android 10+ **não deixa nenhum app ler a área de transferência em segundo p
 
 Requisitos: **Android 7.0 (API 24)** ou superior.
 
-1. Gere o APK (veja abaixo) ou baixe o de uma *release*, quando houver.
+1. Baixe o `Clipme-1.0.0.apk` na [página de releases](https://github.com/Brunnexo/clipme/releases/latest) — ele é assinado, e a release traz o **SHA-256** para você conferir — ou [gere o APK](#compilar-a-partir-do-código) você mesmo.
 2. Instale no celular (pode ser necessário permitir a instalação de fontes desconhecidas).
 3. Abra o Clipme, compartilhe um link de vídeo e pronto.
 
@@ -114,6 +114,8 @@ Para instalar direto num aparelho com Depuração USB:
 ```bash
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
+
+Para gerar o APK **de release** (com R8 e assinado), crie um `keystore.properties` a partir do `keystore.properties.example` apontando para a sua chave e rode `./gradlew assembleRelease`. O arquivo e as chaves (`*.jks`) estão no `.gitignore`; sem `keystore.properties` o build sai sem assinatura.
 
 > [!TIP]
 > O projeto usa **AGP 9** e **Gradle 9.1**, que rodam em JDK 25. O Gradle 8.x não suporta essa versão do JDK.
