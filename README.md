@@ -5,7 +5,6 @@
 <p align="center">
   <img alt="Android 7.0+" src="https://img.shields.io/badge/ANDROID-7.0%2B-FFE500?style=for-the-badge&labelColor=111111">
   <img alt="Kotlin" src="https://img.shields.io/badge/KOTLIN-100%25-FFE500?style=for-the-badge&labelColor=111111">
-  <img alt="Sem backend" src="https://img.shields.io/badge/BACKEND-NENHUM-FF5A5F?style=for-the-badge&labelColor=111111">
   <img alt="Licença MIT" src="https://img.shields.io/badge/LICEN%C3%87A-MIT-FFE500?style=for-the-badge&labelColor=111111">
   <img alt="Idiomas" src="https://img.shields.io/badge/IDIOMAS-EN%20%C2%B7%20PT--BR%20%C2%B7%20ES-7AD7E8?style=for-the-badge&labelColor=111111">
 </p>
