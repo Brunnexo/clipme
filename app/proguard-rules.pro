@@ -1,1 +1,2 @@
-# R8 keeps everything referenced from the manifest and layouts automatically; nothing extra is needed yet.
+# jump3r ships a javax.sound based LameEncoder that Android lacks; Mp3Encoder never touches it.
+-dontwarn javax.sound.**

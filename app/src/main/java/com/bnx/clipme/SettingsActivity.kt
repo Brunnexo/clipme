@@ -55,6 +55,11 @@ class SettingsActivity : AppCompatActivity() {
             else { Settings.setLocation(this, Location.FOLDER); renderLocation() }
         }
         b.btnPickFolder.setOnClickListener { pickFolder.launch(null) }
+        val formats = mapOf(YoutubeFormat.ASK to b.btnFmtAsk.id, YoutubeFormat.VIDEO to b.btnFmtVideo.id, YoutubeFormat.AUDIO to b.btnFmtAudio.id)
+        b.ytFormat.check(formats.getValue(Settings.youtubeFormat(this)))
+        b.ytFormat.addOnButtonCheckedListener { _, id, checked ->
+            if (checked) Settings.setYoutubeFormat(this, formats.entries.first { it.value == id }.key)
+        }
         b.swCapture.isChecked = Settings.autoCapture(this)
         b.swCapture.setOnCheckedChangeListener { _, on ->
             Settings.setAutoCapture(this, on)

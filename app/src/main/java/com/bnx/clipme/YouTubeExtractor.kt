@@ -34,14 +34,18 @@ object YouTubeExtractor : Extractor {
 
     override fun matches(url: String) = videoId(url) != null
 
-    /** Direct mp4 URL (audio+video) by height according to [quality]; throws with YouTube's reason when not playable. */
-    fun parseVideoUrl(response: JSONObject, quality: Quality): String? {
+    private fun checkPlayable(response: JSONObject) {
         val status = response.optJSONObject("playabilityStatus")
         if (status != null && status.optString("status") != "OK") {
             val reason = status.optString("reason").ifEmpty { tr(R.string.err_youtube_unavailable) }
             if (status.optString("status") == "LOGIN_REQUIRED") throw LoginRequired(reason)
             error(reason)
         }
+    }
+
+    /** Direct mp4 URL (audio+video) by height according to [quality]; throws with YouTube's reason when not playable. */
+    fun parseVideoUrl(response: JSONObject, quality: Quality): String? {
+        checkPlayable(response)
         val formats = response.optJSONObject("streamingData")?.optJSONArray("formats") ?: return null
         val urls = (0 until formats.length()).map { formats.getJSONObject(it) }
             .filter { it.optString("mimeType").startsWith("video/mp4") && it.optString("url").isNotEmpty() }
@@ -49,15 +53,31 @@ object YouTubeExtractor : Extractor {
         return if (urls.isEmpty()) null else quality.pick(urls)
     }
 
-    override fun extract(url: String, quality: Quality): Media {
+    /** URL of the highest-bitrate audio-only stream (AAC or Opus, whichever is better); throws like [parseVideoUrl]. */
+    fun parseAudioUrl(response: JSONObject): String? {
+        checkPlayable(response)
+        val formats = response.optJSONObject("streamingData")?.optJSONArray("adaptiveFormats") ?: return null
+        return (0 until formats.length()).map { formats.getJSONObject(it) }
+            .filter { it.optString("mimeType").startsWith("audio/") && it.optString("url").isNotEmpty() }
+            .maxByOrNull { it.optInt("bitrate") }?.getString("url")
+    }
+
+    override fun extract(url: String, quality: Quality): Media = resolve(url, ranged = false) { parseVideoUrl(it, quality) }
+
+    /**
+     * Best audio stream, to be converted to MP3. Audio-only streams are throttled to a crawl unless requested with a
+     * Range header ([Media.ranged]). Signed in and bot-checked, falls back to the progressive video (its audio track is used).
+     */
+    fun extractAudio(url: String): Media = resolve(url, ranged = true, ::parseAudioUrl)
+
+    private fun resolve(url: String, ranged: Boolean, parse: (JSONObject) -> String?): Media {
         val id = videoId(url) ?: error(tr(R.string.err_youtube_link))
         var failure: Exception? = null
         // Fast path: anonymous mobile clients (direct URLs, no cipher) while YouTube does not bot-check this IP/video.
         for (client in CLIENTS) {
             try {
-                val response = player(id, client)
-                parseVideoUrl(response, quality)?.let { return Media(it, mapOf("User-Agent" to client.ua)) }
-                Log.d("ClipmeYT", "${client.json.take(40)} -> sem formato direto")
+                parse(player(id, client))?.let { return Media(it, mapOf("User-Agent" to client.ua), ranged) }
+                Log.d("ClipmeYT", "${client.json.take(40)} -> no direct format")
             } catch (e: Exception) {
                 Log.d("ClipmeYT", "${client.json.take(40)} -> ${e.message}")
                 // prefer the first real reason, but a login request beats everything else
@@ -68,7 +88,6 @@ object YouTubeExtractor : Extractor {
         if (YouTubeAuth.isLoggedIn()) return YouTubeWebResolver.resolve(YouTubeAuth.app, id)
         throw failure ?: IllegalStateException(tr(R.string.err_youtube_no_format))
     }
-
     private fun player(id: String, client: Client): JSONObject {
         val body = JSONObject().put("context", JSONObject().put("client", JSONObject(client.json)))
             .put("videoId", id).put("contentCheckOk", true).put("racyCheckOk", true).toString()

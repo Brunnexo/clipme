@@ -42,6 +42,7 @@
 | **Aparece no Compartilhar** | Em qualquer app, toque em *Compartilhar → Clipme*. O download começa na hora, numa folha na parte de baixo da tela. |
 | **Cole e baixe** | Prefere colar? Cole o link na tela inicial e toque em *Baixar vídeo*. |
 | **Captura automática** | Copie o link com um botão de *Copiar link* e o Clipme baixa sozinho, em segundo plano. [Veja como funciona](#-captura-automática). |
+| **YouTube em MP3** | Em links do YouTube o Clipme pergunta *Vídeo* ou *Áudio (MP3)*, ou você deixa um formato fixo em Configurações. O MP3 é codificado a 320 kbps (o limite real é o áudio original, cerca de 130 kbps). |
 | **Qualidade por rede** | Melhor, Média ou Menor, configurável separadamente para cada rede. |
 | **Você escolhe onde salvar** | Galeria (`Filmes/Clipme`), uma pasta sua, ou **só dentro do app** (privado, fora da galeria e de outros apps). |
 | **Biblioteca própria** | Vídeos baixados por rede, com miniatura, player interno, compartilhar e apagar. Histórico de downloads com tag da rede. |
@@ -57,7 +58,7 @@
 | **Instagram** | Lê o JSON da página pública do post/Reel | Pela resolução disponível | Posts privados não funcionam. |
 | **X / Twitter** | Endpoint dos tweets embutidos (sem login) | Pelo bitrate | Se o tweet só cita um vídeo, usa o do tweet citado. |
 | **TikTok** | Lê o JSON da página pública; repassa cookies da própria página | Pelo bitrate | Aceita links curtos (`vm.tiktok.com`). |
-| **YouTube** | Cliente mobile da API interna; se o YouTube pedir verificação de robô, usa o seu login | Só **360p** (áudio e vídeo juntos) | Formatos maiores vêm separados e exigiriam ffmpeg. |
+| **YouTube** | Cliente mobile da API interna; se o YouTube pedir verificação de robô, usa o seu login | Vídeo só **360p** (áudio e vídeo juntos); áudio em **MP3 320 kbps** | Formatos de vídeo maiores vêm separados e exigiriam ffmpeg. |
 
 > [!NOTE]
 > Todas as extrações são **scraping**: dependem de como cada site responde hoje. Quando uma rede muda o formato, o extrator daquela rede quebra até ser atualizado. Isso é esperado — veja [Contribuindo](#-contribuindo).
@@ -86,7 +87,7 @@ O Android 10+ **não deixa nenhum app ler a área de transferência em segundo p
 
 Requisitos: **Android 7.0 (API 24)** ou superior.
 
-1. Baixe o `Clipme-1.0.0.apk` na [página de releases](https://github.com/Brunnexo/clipme/releases/latest) — ele é assinado, e a release traz o **SHA-256** para você conferir — ou [gere o APK](#compilar-a-partir-do-código) você mesmo.
+1. Baixe o `Clipme-1.1.0.apk` na [página de releases](https://github.com/Brunnexo/clipme/releases/latest) — ele é assinado, e a release traz o **SHA-256** para você conferir — ou [gere o APK](#compilar-a-partir-do-código) você mesmo.
 2. Instale no celular (pode ser necessário permitir a instalação de fontes desconhecidas).
 3. Abra o Clipme, compartilhe um link de vídeo e pronto.
 
@@ -180,6 +181,12 @@ Decisões que valem saber:
 ## 📄 Licença
 
 Distribuído sob a **[licença MIT](LICENSE)**: você pode usar, copiar, modificar e redistribuir o código, inclusive em projetos próprios, **desde que mantenha o aviso de copyright** com o meu nome (`Copyright (c) 2026 Brunnexo`) e o texto da licença junto com o código.
+
+<img src="docs/divider.svg" width="100%" alt="">
+
+### Bibliotecas de terceiros
+
+- [jump3r](https://github.com/Sciss/jump3r) (port do LAME para Java, **LGPL 2.1+**) — codifica o MP3 do YouTube. O código do Clipme é MIT; a biblioteca mantém a licença dela e o projeto é aberto, então dá para recompilar com outra versão.
 
 <img src="docs/divider.svg" width="100%" alt="">
 

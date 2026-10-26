@@ -57,18 +57,23 @@ class ClipboardService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        intent?.getStringExtra(EXTRA_LINK)?.let { link -> pool.execute { download(link) } }
+        intent?.getStringExtra(EXTRA_LINK)?.let { link ->
+            val format = runCatching { Format.valueOf(intent.getStringExtra(EXTRA_FORMAT) ?: "") }.getOrDefault(Format.VIDEO)
+            pool.execute { download(link, format) }
+        }
         return START_STICKY
     }
 
-    private fun download(link: String) {
+    private fun download(link: String, format: Format) {
         val nm = getSystemService(NotificationManager::class.java)
         val id = (System.currentTimeMillis() % 100_000).toInt() + 10
         fun builder() = NotificationCompat.Builder(this, DOWNLOADS).setSmallIcon(R.drawable.ic_download).setContentIntent(open())
         var lastPct = -1
         val result = runCatching {
-            DownloadRunner.run(this, link) { stage, network, pct ->
-                if (stage == DownloadRunner.Stage.SEARCHING) {
+            DownloadRunner.run(this, link, format) { stage, network, pct ->
+                if (stage == DownloadRunner.Stage.CONVERTING) {
+                    nm.notify(id, builder().setContentTitle(getString(R.string.status_converting)).setContentText(network).setOngoing(true).setProgress(100, pct ?: 0, pct == null).build())
+                } else if (stage == DownloadRunner.Stage.SEARCHING) {
                     nm.notify(id, builder().setContentTitle(getString(R.string.status_searching)).setContentText(network).setOngoing(true).setProgress(0, 0, true).build())
                 } else if (pct != lastPct) {
                     lastPct = pct ?: 0
@@ -99,6 +104,7 @@ class ClipboardService : Service() {
         private const val MONITOR = "monitor"
         private const val DOWNLOADS = "downloads"
         private const val EXTRA_LINK = "link"
+        private const val EXTRA_FORMAT = "format"
 
         fun start(c: Context) {
             c.startForegroundService(Intent(c, ClipboardService::class.java))
@@ -119,7 +125,19 @@ class ClipboardService : Service() {
             val repeat = Settings.lastCaptured(c) == link && System.currentTimeMillis() - Settings.lastCapturedAt(c) < 10 * 60_000
             if (!force && repeat) return false
             Settings.setLastCaptured(c, link)
-            c.startForegroundService(Intent(c, ClipboardService::class.java).putExtra(EXTRA_LINK, link))
+            val youtube = YouTubeExtractor.matches(link)
+            if (youtube && Settings.youtubeFormat(c) == YoutubeFormat.ASK) {
+                // needs an answer: show the video/MP3 chooser (we are in the foreground here)
+                c.startActivity(
+                    Intent(c, ShareActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain")
+                        .putExtra(Intent.EXTRA_TEXT, link).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                )
+                return true
+            }
+            val format = if (youtube && Settings.youtubeFormat(c) == YoutubeFormat.AUDIO) Format.AUDIO else Format.VIDEO
+            c.startForegroundService(
+                Intent(c, ClipboardService::class.java).putExtra(EXTRA_LINK, link).putExtra(EXTRA_FORMAT, format.name)
+            )
             Toast.makeText(c.applicationContext, R.string.toast_starting_download, Toast.LENGTH_SHORT).show()
             return true
         }

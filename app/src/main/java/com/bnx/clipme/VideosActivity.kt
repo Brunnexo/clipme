@@ -47,7 +47,7 @@ class VideosActivity : AppCompatActivity() {
                 row.root.setOnClickListener { VideoActions.open(this, item) }
                 row.btnShare.setOnClickListener { VideoActions.share(this, item) }
                 row.btnDelete.setOnClickListener { confirmDelete(item) }
-                VideoActions.thumbnail(this, item, row.thumb)
+                if (item.audio) row.thumb.setImageResource(R.drawable.ic_music) else VideoActions.thumbnail(this, item, row.thumb)
                 b.content.addView(row.root, b.content.indexOfChild(b.empty))
             }
         }

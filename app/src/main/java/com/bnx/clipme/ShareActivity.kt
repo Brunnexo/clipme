@@ -18,6 +18,7 @@ import kotlin.concurrent.thread
 class ShareActivity : AppCompatActivity() {
     private lateinit var b: ActivityShareBinding
     private var pending: String? = null
+    private var pendingFormat = Format.VIDEO
     private var saved: History.Item? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,27 +46,45 @@ class ShareActivity : AppCompatActivity() {
         val text = intent.takeIf { it.action == Intent.ACTION_SEND }?.getStringExtra(Intent.EXTRA_TEXT)
         val link = text?.let { DownloadRunner.LINK.find(it)?.value }
         if (link == null) show(R.drawable.ic_error, true, getString(R.string.share_no_link_title), getString(R.string.share_no_link_msg))
-        else start(link)
+        else if (YouTubeExtractor.matches(link)) when (Settings.youtubeFormat(this)) {
+            YoutubeFormat.ASK -> showChoice(link)
+            YoutubeFormat.VIDEO -> start(link, Format.VIDEO)
+            YoutubeFormat.AUDIO -> start(link, Format.AUDIO)
+        } else start(link, Format.VIDEO)
     }
 
-    private fun start(link: String) {
+    /** YouTube link and no default format chosen: ask video or MP3. */
+    private fun showChoice(link: String) {
+        show(R.drawable.ic_download, true, getString(R.string.choice_title), "YouTube")
+        b.actions.visibility = View.GONE
+        b.choice.visibility = View.VISIBLE
+        b.btnVideo.setOnClickListener { start(link, Format.VIDEO) }
+        b.btnAudio.setOnClickListener { start(link, Format.AUDIO) }
+    }
+
+    private fun start(link: String, format: Format) {
+        b.choice.visibility = View.GONE
         val location = Settings.location(this)
         // DownloadManager into public dirs needs storage permission only before Android 10.
-        if (location == Location.GALLERY && Build.VERSION.SDK_INT < 29 &&
+        if (location == Location.GALLERY && format == Format.VIDEO && Build.VERSION.SDK_INT < 29 &&
             checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
         ) {
             pending = link
+            pendingFormat = format
             requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
             return
         }
         val app = applicationContext
         thread {
             val result = runCatching {
-                DownloadRunner.run(app, link, { isDestroyed }) { stage, network, pct ->
+                DownloadRunner.run(app, link, format, { isDestroyed }) { stage, network, pct ->
                     runOnUiThread {
                         if (isDestroyed) return@runOnUiThread
-                        if (stage == DownloadRunner.Stage.SEARCHING) show(R.drawable.ic_download, false, getString(R.string.status_searching), network)
-                        else show(R.drawable.ic_download, false, getString(R.string.status_downloading), network, pct ?: 0)
+                        when (stage) {
+                            DownloadRunner.Stage.SEARCHING -> show(R.drawable.ic_download, false, getString(R.string.status_searching), network)
+                            DownloadRunner.Stage.DOWNLOADING -> show(R.drawable.ic_download, false, getString(R.string.status_downloading), network, pct ?: 0)
+                            DownloadRunner.Stage.CONVERTING -> show(R.drawable.ic_music, false, getString(R.string.status_converting), network, pct ?: 0)
+                        }
                     }
                 }
             }
@@ -73,7 +92,7 @@ class ShareActivity : AppCompatActivity() {
                 result.onSuccess {
                     saved = it
                     val where = when (location) {
-                        Location.GALLERY -> getString(R.string.saved_gallery)
+                        Location.GALLERY -> getString(if (format == Format.AUDIO) R.string.saved_gallery_audio else R.string.saved_gallery)
                         Location.FOLDER -> getString(R.string.saved_folder)
                         Location.PRIVATE -> getString(R.string.saved_private)
                     }
@@ -105,6 +124,7 @@ class ShareActivity : AppCompatActivity() {
         b.icon.setBackgroundResource(if (icon == R.drawable.ic_error) R.drawable.bg_icon_circle_error else R.drawable.bg_icon_circle)
         b.title.text = title
         b.message.text = message
+        b.choice.visibility = View.GONE
         b.progress.visibility = if (done) View.GONE else View.VISIBLE
         b.actions.visibility = if (done) View.VISIBLE else View.GONE
         b.btnShare.visibility = if (icon == R.drawable.ic_check_circle) View.VISIBLE else View.GONE
@@ -120,7 +140,7 @@ class ShareActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(code, perms, results)
         val link = pending ?: return
         pending = null
-        if (results.firstOrNull() == PackageManager.PERMISSION_GRANTED) start(link)
+        if (results.firstOrNull() == PackageManager.PERMISSION_GRANTED) start(link, pendingFormat)
         else show(R.drawable.ic_error, true, getString(R.string.share_perm_denied_title), getString(R.string.share_perm_denied_msg))
     }
 }

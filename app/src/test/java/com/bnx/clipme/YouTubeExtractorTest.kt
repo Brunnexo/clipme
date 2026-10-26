@@ -29,4 +29,17 @@ class YouTubeExtractorTest {
         val blocked = JSONObject("""{"playabilityStatus":{"status":"LOGIN_REQUIRED","reason":"Sign in"}}""")
         assertEquals("Sign in", assertThrows(IllegalStateException::class.java) { YouTubeExtractor.parseVideoUrl(blocked, Quality.BEST) }.message)
     }
+
+    @Test
+    fun parseAudioUrl() {
+        val ok = JSONObject(
+            """{"playabilityStatus":{"status":"OK"},"streamingData":{"adaptiveFormats":[
+            {"mimeType":"video/mp4; codecs=\"avc1\"","bitrate":9000000,"url":"https://video"},
+            {"mimeType":"audio/mp4; codecs=\"mp4a.40.2\"","bitrate":130677,"url":"https://aac"},
+            {"mimeType":"audio/webm; codecs=\"opus\"","bitrate":136544,"url":"https://opus"},
+            {"mimeType":"audio/webm; codecs=\"opus\"","bitrate":990000,"signatureCipher":"s=x"}]}}"""
+        )
+        assertEquals("https://opus", YouTubeExtractor.parseAudioUrl(ok))
+        assertNull(YouTubeExtractor.parseAudioUrl(JSONObject("""{"playabilityStatus":{"status":"OK"},"streamingData":{}}""")))
+    }
 }

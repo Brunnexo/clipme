@@ -17,8 +17,8 @@ android {
         applicationId = "com.bnx.clipme"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.1.0"
     }
 
     signingConfigs {
@@ -55,6 +55,7 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.documentfile:documentfile:1.0.1")
     implementation("androidx.webkit:webkit:1.12.1")
+    implementation("de.sciss:jump3r:1.0.5") // LAME port (LGPL 2.1+), MP3 encoding for YouTube audio
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20240303")
 }

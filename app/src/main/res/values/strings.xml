@@ -100,4 +100,16 @@
     <string name="about_version">Version %1$s</string>
     <string name="about_github">GitHub: brunnexo</string>
     <string name="about_description">Clipme downloads videos from social networks: share a link, or copy it with auto capture on, and the video is saved. Use it only for content you have the right to save.</string>
+    <string name="choice_title">Download as…</string>
+    <string name="choice_video">Video</string>
+    <string name="choice_audio">Audio (MP3)</string>
+    <string name="status_converting">Converting to MP3…</string>
+    <string name="section_youtube_format">YouTube format</string>
+    <string name="fmt_ask">Ask</string>
+    <string name="fmt_video">Video</string>
+    <string name="fmt_audio">MP3</string>
+    <string name="fmt_hint">What to do when the link is from YouTube. MP3 is encoded at 320 kbps, but the quality cannot exceed the source audio (about 130 kbps AAC/Opus). Auto capture asks too when set to Ask.</string>
+    <string name="saved_gallery_audio">Saved in Music/Clipme</string>
+    <string name="err_audio_none">No audio track found</string>
+    <string name="err_audio_convert">Could not convert the audio</string>
 </resources>

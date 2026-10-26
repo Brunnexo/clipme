@@ -1,7 +1,8 @@
 package com.bnx.clipme
 
 /** Direct video URL plus any headers the CDN requires (cookies, referer, ...). */
-data class Media(val url: String, val headers: Map<String, String> = emptyMap())
+/** [ranged]: the CDN throttles plain GETs of this stream, so it must be fetched with a `Range: bytes=0-` request. */
+data class Media(val url: String, val headers: Map<String, String> = emptyMap(), val ranged: Boolean = false)
 
 /** One extractor per social network; scraping formats change often, so keep each isolated. */
 interface Extractor {

@@ -100,4 +100,16 @@
     <string name="about_version">Versão %1$s</string>
     <string name="about_github">GitHub: brunnexo</string>
     <string name="about_description">O Clipme baixa vídeos de redes sociais: compartilhe um link, ou copie-o com a captura automática ligada, e o vídeo é salvo. Use apenas para conteúdo que você tem o direito de salvar.</string>
+    <string name="choice_title">Baixar como…</string>
+    <string name="choice_video">Vídeo</string>
+    <string name="choice_audio">Áudio (MP3)</string>
+    <string name="status_converting">Convertendo para MP3…</string>
+    <string name="section_youtube_format">Formato do YouTube</string>
+    <string name="fmt_ask">Perguntar</string>
+    <string name="fmt_video">Vídeo</string>
+    <string name="fmt_audio">MP3</string>
+    <string name="fmt_hint">O que fazer quando o link é do YouTube. O MP3 é codificado a 320 kbps, mas a qualidade não passa da do áudio original (cerca de 130 kbps em AAC/Opus). A captura automática também pergunta quando está em Perguntar.</string>
+    <string name="saved_gallery_audio">Salvo em Música/Clipme</string>
+    <string name="err_audio_none">Nenhuma faixa de áudio encontrada</string>
+    <string name="err_audio_convert">Não foi possível converter o áudio</string>
 </resources>

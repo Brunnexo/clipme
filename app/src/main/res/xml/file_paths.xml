@@ -1,1 +1,5 @@
-<paths><files-path name="videos" path="videos/" /></paths>
+<paths>
+    <files-path name="videos" path="videos/" />
+    <files-path name="audio" path="audio/" />
+    <external-path name="music" path="Music/Clipme/" />
+</paths>

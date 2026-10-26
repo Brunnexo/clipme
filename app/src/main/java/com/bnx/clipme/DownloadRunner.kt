@@ -8,17 +8,32 @@ import android.os.Environment
 /** Whole download pipeline (extract, save by location, record history), shared by the share sheet and the clipboard service. */
 object DownloadRunner {
     class Unsupported : Exception()
-    enum class Stage { SEARCHING, DOWNLOADING }
+    enum class Stage { SEARCHING, DOWNLOADING, CONVERTING }
 
     val LINK = Regex("""https?://\S+""")
 
     fun supports(link: String) = Networks.extractors.any { it.matches(link) }
 
     /** Blocking. [onStage] gets the network name and, while downloading, the percent (null = unknown). */
-    fun run(c: Context, link: String, cancelled: () -> Boolean = { false }, onStage: (Stage, String, Int?) -> Unit): History.Item {
+    fun run(
+        c: Context, link: String, format: Format = Format.VIDEO, cancelled: () -> Boolean = { false },
+        onStage: (Stage, String, Int?) -> Unit,
+    ): History.Item {
         val ex = Networks.extractors.firstOrNull { it.matches(link) } ?: throw Unsupported()
         val location = Settings.location(c)
         onStage(Stage.SEARCHING, ex.name, null)
+        if (format == Format.AUDIO) {
+            if (ex !== YouTubeExtractor) throw Unsupported()
+            val media = YouTubeExtractor.extractAudio(link)
+            val now = System.currentTimeMillis()
+            onStage(Stage.DOWNLOADING, ex.name, 0)
+            val (kind, uri) = Downloader.fetchAudio(
+                c, media, location,
+                { onStage(Stage.DOWNLOADING, ex.name, it) },
+                { onStage(Stage.CONVERTING, ex.name, it) },
+            )
+            return History.Item(now, ex.name, link, now, kind, uri, audio = true).also { History.add(c, it) }
+        }
         val media = ex.extract(link, Settings.quality(c, ex.name))
         val now = System.currentTimeMillis()
         onStage(Stage.DOWNLOADING, ex.name, 0)

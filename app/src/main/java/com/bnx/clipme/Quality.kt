@@ -13,6 +13,12 @@ enum class Quality {
     }
 }
 
+/** What to save: the video, or (YouTube only) just the audio as MP3. */
+enum class Format { VIDEO, AUDIO }
+
+/** What to do with YouTube links: ask every time, or always use one format. */
+enum class YoutubeFormat { ASK, VIDEO, AUDIO }
+
 /** GALLERY = public Movies/Clipme via DownloadManager; FOLDER = user-picked SAF tree; PRIVATE = app-internal storage. */
 enum class Location { GALLERY, FOLDER, PRIVATE }
 
@@ -38,6 +44,11 @@ object Settings {
 
     fun setLastCaptured(c: Context, link: String) =
         prefs(c).edit().putString("last_captured", link).putLong("last_captured_at", System.currentTimeMillis()).apply()
+
+    fun youtubeFormat(c: Context): YoutubeFormat =
+        runCatching { YoutubeFormat.valueOf(prefs(c).getString("youtube_format", null) ?: "") }.getOrDefault(YoutubeFormat.ASK)
+
+    fun setYoutubeFormat(c: Context, f: YoutubeFormat) = prefs(c).edit().putString("youtube_format", f.name).apply()
 
     fun autoCapture(c: Context) = prefs(c).getBoolean("auto_capture", false)
 

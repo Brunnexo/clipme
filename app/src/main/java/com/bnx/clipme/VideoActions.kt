@@ -16,19 +16,19 @@ import kotlin.concurrent.thread
 object VideoActions {
     private fun uri(c: Context, item: History.Item): Uri? = when (item.kind) {
         "file" -> FileProvider.getUriForFile(c, "${c.packageName}.files", File(item.uri!!))
-        "tree" -> Uri.parse(item.uri)
+        "tree", "ms" -> Uri.parse(item.uri)
         else -> c.getSystemService(DownloadManager::class.java).getUriForDownloadedFile(item.id)
     }
 
     /** Plays in the app itself, so private videos never leave it. */
     fun open(c: Context, item: History.Item) {
         val uri = uri(c, item) ?: return toast(c, c.getString(R.string.toast_video_unavailable))
-        c.startActivity(Intent(c, PlayerActivity::class.java).setData(uri))
+        c.startActivity(Intent(c, PlayerActivity::class.java).setData(uri).putExtra(PlayerActivity.EXTRA_AUDIO, item.audio))
     }
 
     fun share(c: Context, item: History.Item) {
         val uri = uri(c, item) ?: return toast(c, c.getString(R.string.toast_video_unavailable))
-        val send = Intent(Intent.ACTION_SEND).setType("video/mp4").putExtra(Intent.EXTRA_STREAM, uri)
+        val send = Intent(Intent.ACTION_SEND).setType(if (item.audio) "audio/mpeg" else "video/mp4").putExtra(Intent.EXTRA_STREAM, uri)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         c.startActivity(Intent.createChooser(send, null))
     }
@@ -38,11 +38,13 @@ object VideoActions {
         when (item.kind) {
             "file" -> File(item.uri!!).delete()
             "tree" -> DocumentFile.fromSingleUri(c, Uri.parse(item.uri))?.delete()
+            "ms" -> c.contentResolver.delete(Uri.parse(item.uri), null, null)
             else -> c.getSystemService(DownloadManager::class.java).remove(item.id)
         }
     }
 
     fun thumbnail(c: Context, item: History.Item, view: ImageView) {
+        if (item.audio) return
         val uri = uri(c, item) ?: return
         view.tag = item.id
         thread {

@@ -10,12 +10,12 @@ import java.io.File
 
 /**
  * Last downloads, kept in SharedPreferences. [kind] says where the file lives:
- * "dm" = DownloadManager id in [id]; "file" = private file path in [uri]; "tree" = SAF document uri in [uri].
+ * "dm" = DownloadManager id in [id]; "file" = file path in [uri]; "tree" = SAF document uri in [uri]; "ms" = MediaStore uri in [uri].
  */
 object History {
     data class Item(
         val id: Long, val network: String, val link: String, val time: Long,
-        val kind: String = "dm", val uri: String? = null,
+        val kind: String = "dm", val uri: String? = null, val audio: Boolean = false,
     )
     enum class State { RUNNING, DONE, FAILED, GONE }
 
@@ -26,7 +26,7 @@ object History {
         val a = JSONArray(prefs(c).getString("items", "[]"))
         return (0 until a.length()).map {
             a.getJSONObject(it).run {
-                Item(getLong("id"), getString("network"), getString("link"), getLong("time"), optString("kind", "dm"), optString("uri").ifEmpty { null })
+                Item(getLong("id"), getString("network"), getString("link"), getLong("time"), optString("kind", "dm"), optString("uri").ifEmpty { null }, optBoolean("audio"))
             }
         }
     }
@@ -40,7 +40,7 @@ object History {
         items.forEach {
             a.put(
                 JSONObject().put("id", it.id).put("network", it.network).put("link", it.link).put("time", it.time)
-                    .put("kind", it.kind).put("uri", it.uri ?: "")
+                    .put("kind", it.kind).put("uri", it.uri ?: "").put("audio", it.audio)
             )
         }
         prefs(c).edit().putString("items", a.toString()).apply()
@@ -48,6 +48,7 @@ object History {
 
     fun state(c: Context, item: Item): State = when (item.kind) {
         "file" -> if (File(item.uri!!).exists()) State.DONE else State.GONE
+        "ms" -> if (c.contentResolver.query(Uri.parse(item.uri), arrayOf("_id"), null, null, null)?.use { it.count > 0 } == true) State.DONE else State.GONE
         "tree" -> if (DocumentFile.fromSingleUri(c, Uri.parse(item.uri))?.exists() == true) State.DONE else State.GONE
         else -> dmState(c, item.id)
     }

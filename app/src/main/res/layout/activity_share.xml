@@ -81,6 +81,33 @@
             app:trackThickness="12dp" />
 
         <LinearLayout
+            android:id="@+id/choice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/btnVideo"
+                style="@style/Widget.Clipme.Button"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:text="@string/choice_video" />
+
+            <TextView
+                android:id="@+id/btnAudio"
+                style="@style/Widget.Clipme.Button"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:text="@string/choice_audio" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/actions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

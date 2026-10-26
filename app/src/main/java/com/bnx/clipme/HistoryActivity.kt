@@ -48,7 +48,7 @@ class HistoryActivity : AppCompatActivity() {
             }
             row.icon.setImageResource(icon)
             row.state.text = label
-            row.title.text = item.network
+            row.title.text = if (item.audio) "${item.network} · MP3" else item.network
             row.subtitle.text = "${DateUtils.getRelativeTimeSpanString(item.time)} · ${item.link}"
             if (state == History.State.DONE) row.root.setOnClickListener { VideoActions.open(this, item) }
             b.content.addView(row.root, b.content.indexOfChild(b.empty))
