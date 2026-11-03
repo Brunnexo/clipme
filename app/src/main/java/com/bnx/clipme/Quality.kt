@@ -37,22 +37,10 @@ object Settings {
 
     fun setLocation(c: Context, l: Location) = prefs(c).edit().putString("location", l.name).apply()
 
-    /** Last link started by auto-capture, so the same clipboard is not downloaded twice. */
-    fun lastCaptured(c: Context): String? = prefs(c).getString("last_captured", null)
-
-    fun lastCapturedAt(c: Context): Long = prefs(c).getLong("last_captured_at", 0)
-
-    fun setLastCaptured(c: Context, link: String) =
-        prefs(c).edit().putString("last_captured", link).putLong("last_captured_at", System.currentTimeMillis()).apply()
-
     fun youtubeFormat(c: Context): YoutubeFormat =
         runCatching { YoutubeFormat.valueOf(prefs(c).getString("youtube_format", null) ?: "") }.getOrDefault(YoutubeFormat.ASK)
 
     fun setYoutubeFormat(c: Context, f: YoutubeFormat) = prefs(c).edit().putString("youtube_format", f.name).apply()
-
-    fun autoCapture(c: Context) = prefs(c).getBoolean("auto_capture", false)
-
-    fun setAutoCapture(c: Context, on: Boolean) = prefs(c).edit().putBoolean("auto_capture", on).apply()
 
     /** Persisted tree URI of the chosen folder, or null. */
     fun folder(c: Context): String? = prefs(c).getString("folder", null)

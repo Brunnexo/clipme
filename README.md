@@ -41,7 +41,6 @@
 |---|---|
 | **Aparece no Compartilhar** | Em qualquer app, toque em *Compartilhar → Clipme*. O download começa na hora, numa folha na parte de baixo da tela. |
 | **Cole e baixe** | Prefere colar? Cole o link na tela inicial e toque em *Baixar vídeo*. |
-| **Captura automática** | Copie o link com um botão de *Copiar link* e o Clipme baixa sozinho, em segundo plano. [Veja como funciona](#-captura-automática). |
 | **YouTube em MP3** | Em links do YouTube o Clipme pergunta *Vídeo* ou *Áudio (MP3)*, ou você deixa um formato fixo em Configurações. O MP3 é codificado a 320 kbps (o limite real é o áudio original, cerca de 130 kbps). |
 | **Qualidade por rede** | Melhor, Média ou Menor, configurável separadamente para cada rede. |
 | **Você escolhe onde salvar** | Galeria (`Filmes/Clipme`), uma pasta sua, ou **só dentro do app** (privado, fora da galeria e de outros apps). |
@@ -65,29 +64,11 @@
 
 <img src="docs/divider.svg" width="100%" alt="">
 
-## 🤖 Captura automática
-
-O Android 10+ **não deixa nenhum app ler a área de transferência em segundo plano** — nem receber aviso de que ela mudou. Isso vale até para serviços de acessibilidade (testado). O que dá para fazer, e é o que o Clipme faz:
-
-1. Você liga *Baixar links copiados* em **Configurações** e ativa o serviço de acessibilidade do Clipme.
-2. O serviço **só observa o rótulo** de cliques, avisos e janelas. Se o texto menciona *copy / copiar / copiado / copié…*, ele abre por um instante uma tela invisível do Clipme.
-3. Essa tela ganha foco (a única condição em que o Android libera a leitura), lê o link, mostra **"Iniciando download…"** e passa o link para o serviço de download.
-4. O download corre em segundo plano, com notificação de progresso.
-
-**Limites honestos**
-
-- Funciona com botões normais de **Copiar link** (menu de compartilhar, botões dos apps). O menu flutuante de *copiar texto selecionado* não gera evento.
-- O Android mostra o aviso do sistema *"Clipme colou da área de transferência"* a cada leitura. Não dá para remover.
-- Apps instalados fora de uma loja precisam de **Informações do app → ⋮ → Permitir configurações restritas** antes de ligar a acessibilidade.
-- Fora isso, o Clipme também baixa o link copiado **assim que você abre o app**, e a notificação fixa tem o botão **Baixar link copiado**.
-
-<img src="docs/divider.svg" width="100%" alt="">
-
 ## 🚀 Instalação
 
 Requisitos: **Android 7.0 (API 24)** ou superior.
 
-1. Baixe o `Clipme-1.1.0.apk` na [página de releases](https://github.com/Brunnexo/clipme/releases/latest) — ele é assinado, e a release traz o **SHA-256** para você conferir — ou [gere o APK](#compilar-a-partir-do-código) você mesmo.
+1. Baixe o `Clipme-1.2.0.apk` na [página de releases](https://github.com/Brunnexo/clipme/releases/latest) — ele é assinado, e a release traz o **SHA-256** para você conferir — ou [gere o APK](#compilar-a-partir-do-código) você mesmo.
 2. Instale no celular (pode ser necessário permitir a instalação de fontes desconhecidas).
 3. Abra o Clipme, compartilhe um link de vídeo e pronto.
 
@@ -138,7 +119,6 @@ app/src/main/java/com/bnx/clipme/
 ├── Downloader.kt           # download em processo (pasta SAF / armazenamento privado)
 ├── ShareActivity.kt        # folha de download (alvo do "Compartilhar")
 ├── MainActivity.kt         # tela inicial + menu hambúrguer
-├── ClipAccessibilityService.kt / ClipCaptureActivity.kt / ClipboardService.kt   # captura automática
 └── History.kt, Settings (Quality.kt), VideoActions.kt, …
 ```
 
@@ -198,7 +178,7 @@ Contribuições são bem-vindas — principalmente **correções quando uma rede
 2. Rode `./gradlew testDebugUnitTest` antes de abrir o PR.
 3. Descreva o que mudou e, se for um extrator, com qual link público você testou.
 
-Ideias em aberto: guardar o cookie do YouTube criptografado, qualidades maiores no YouTube (juntar áudio e vídeo), novas redes (Facebook, Reddit, Pinterest…), restaurar a captura automática após reiniciar o aparelho.
+Ideias em aberto: guardar o cookie do YouTube criptografado, qualidades maiores no YouTube (juntar áudio e vídeo), novas redes (Facebook, Reddit, Pinterest…).
 
 <img src="docs/divider.svg" width="100%" alt="">
 

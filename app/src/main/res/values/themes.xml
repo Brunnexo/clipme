@@ -23,11 +23,6 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
-    <style name="Theme.Clipme.Capture" parent="@android:style/Theme.Translucent.NoTitleBar">
-        <item name="android:windowAnimationStyle">@null</item>
-        <item name="android:backgroundDimEnabled">false</item>
-    </style>
-
     <style name="Theme.Clipme.Player" parent="Theme.Material3.Dark.NoActionBar">
         <item name="android:windowBackground">@android:color/black</item>
     </style>

@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        if (Settings.autoCapture(this)) ClipboardService.start(this)
         b.btnMenu.setOnClickListener { b.drawer.openDrawer(GravityCompat.START) }
         mapOf(
             b.navVideos to VideosActivity::class.java,
@@ -58,14 +57,6 @@ class MainActivity : AppCompatActivity() {
         b.linkInput.setOnEditorActionListener { _, id, _ ->
             (id == EditorInfo.IME_ACTION_GO).also { if (it) download() }
         }
-    }
-
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (!hasFocus || !Settings.autoCapture(this)) return
-        // focused now, so the clipboard is readable: a freshly copied link starts downloading by itself
-        val text = getSystemService(ClipboardManager::class.java).primaryClip?.getItemAt(0)?.coerceToText(this)?.toString()
-        if (text != null) ClipboardService.capture(this, text)
     }
 
     private fun download() {
